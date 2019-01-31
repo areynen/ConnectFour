@@ -10,6 +10,9 @@ Alex Reynen
 
 using namespace std;
 
+static const int WIDTH = 6;
+static const int HEIGHT = 7;
+
 class Board {
 public:
     Board();
@@ -19,7 +22,7 @@ public:
 private:
     void hostGame();
 
-    char board[6][7];
+    char board[WIDTH][HEIGHT];
 
     void printBoard();
 
@@ -53,16 +56,14 @@ void Board::loopGame() {
     char contin = 'y';
 
     hostGame();
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);                //white
     cout << "Play again? (y/n): ";
     cin >> contin;
     if (contin == 'y') {
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 7; j++) {
+        for (int i = 0; i < WIDTH; i++) {
+            for (int j = 0; j < HEIGHT; j++) {
                 board[i][j] = ' ';
             }
         }
-        system("cls");
         loopGame();
     }
     if (times == 0)
@@ -77,8 +78,8 @@ Input: N/A
 Returns: N/A
 */
 Board::Board() {
-    for (int i = 0; i < 6; i++) {
-        for (int j = 0; j < 7; j++) {
+    for (int i = 0; i < WIDTH; i++) {
+        for (int j = 0; j < HEIGHT; j++) {
             board[i][j] = ' ';
         }
     }
@@ -91,9 +92,10 @@ Input: N/A
 Returns: N/A
 */
 void Board::printBoard() {
-    for (int i = 0; i < 6; i++) {
+    cout << "\n\n";
+    for (int i = 0; i < WIDTH; i++) {
         cout << "|";
-        for (int j = 0; j < 7; j++) {
+        for (int j = 0; j < HEIGHT; j++) {
             cout << board[i][j];
             cout << "|";
         }
@@ -131,12 +133,9 @@ void Board::makeMove(char player) {
     printBoard();
     cout << "Player ";
     if (player == 'X') {
-        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 3);    //aqua
     } else if (player == 'O') {
-        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 4);    //dark red
     }
     cout << player;
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);        //white
     cout << " select a column to play in: ";
     cin >> col;
     while (cin.fail()) {
@@ -166,7 +165,7 @@ void Board::makeMove(char player) {
         }
     }
 
-    for (int i = 6; i >= 0; i--) {
+    for (int i = WIDTH; i >= 0; i--) {
         if (board[i][col] == ' ') {
             board[i][col] = player;
             break;
@@ -181,7 +180,7 @@ Input: col (the player's choice of where to move)
 Returns: true if not full, false if cant play
 */
 bool Board::colNotFull(const int col) {
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < WIDTH; i++) {
         if (board[i][col] == ' ') {
             return true;
         }
@@ -197,8 +196,8 @@ Returns: true if its full, false if not full
 */
 bool Board::isFull() {
     int blankSpaces = 0;
-    for (int i = 0; i < 6; i++) {
-        for (int j = 0; j < 7; j++) {
+    for (int i = 0; i < WIDTH; i++) {
+        for (int j = 0; j < HEIGHT; j++) {
             if (board[i][j] == ' ') {
                 blankSpaces++;
             }
@@ -218,8 +217,8 @@ Returns: true if player has won, false if the game must go on
 */
 bool Board::hasWon(char player) {
     //horizontal win condition
-    for (int i = 0; i < 7; i++) {
-        for (int j = 0; j < 6 - 3; j++) {
+    for (int i = 0; i < WIDTH; i++) {
+        for (int j = 0; j < HEIGHT - 3; j++) {
             {
                 if (board[i][j] == player && board[i][j] == board[i][j + 1] && board[i][j] == board[i][j + 2] &&
                     board[i][j] == board[i][j + 3])
@@ -229,8 +228,8 @@ bool Board::hasWon(char player) {
     }
 
     //vertical win condition
-    for (int i = 0; i < 7 - 3; i++) {
-        for (int j = 0; j < 6; j++) {
+    for (int i = 0; i < HEIGHT - 3; i++) {
+        for (int j = 0; j < WIDTH; j++) {
             if (board[i][j] == player && board[i][j] == board[i + 1][j] && board[i][j] == board[i + 2][j] &&
                 board[i][j] == board[i + 3][j]) {
                 return true;
@@ -239,7 +238,7 @@ bool Board::hasWon(char player) {
     }
 
     //diagonal right (\) win condition
-    for (int i = 0; i < 7 - 3; i++) {
+    for (int i = 0; i < HEIGHT - 3; i++) {
         for (int j = 3; j > -1; j--) {
             {
                 if (board[i][j] == player && board[i][j] == board[i + 1][j + 1] && board[i][j] == board[i + 2][j + 2] &&
@@ -250,8 +249,8 @@ bool Board::hasWon(char player) {
     }
 
     //diagonal left (/) win condition
-    for (int i = 0; i < 7 - 3; i++) {
-        for (int j = 3; j < 7; j++) {
+    for (int i = 0; i < HEIGHT - 3; i++) {
+        for (int j = 3; j < HEIGHT; j++) {
             {
                 if (board[i][j] == player && board[i][j] == board[i + 1][j - 1] && board[i][j] == board[i + 2][j - 2] &&
                     board[i][j] == board[i + 3][j - 3])
@@ -272,21 +271,15 @@ Returns: N/A
 void Board::announceWinner(char winner) {
     printBoard();
     if (winner == 'X') {
-        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 3);    //aqua
         cout << winner;
-        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);    //white
         cout << " wins!";
     } else if (winner == 'O') {
-        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 4);    //dark red
         cout << winner;
-        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);    //white
         cout << " wins!";
     } else if (winner == 'C') {
         cout << "It's a tie! No one wins.";
     }
-
     cout << endl;
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 8);        //gray
 }
 
 /*
@@ -299,7 +292,6 @@ void Board::hostGame() {
     char winner;
     do {
         makeMove('X');
-        system("CLS");
         if (hasWon('X')) {
             winner = 'X';
             break;
@@ -309,7 +301,6 @@ void Board::hostGame() {
             break;
         }
         makeMove('O');
-        system("CLS");
         if (hasWon('O')) {
             winner = 'O';
             break;
