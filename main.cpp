@@ -1,7 +1,3 @@
-//
-// Created by Alex on 1/31/2019.
-//
-
 /*
 File Name: ProjectFive.cpp
 Purpose: Connect Four
