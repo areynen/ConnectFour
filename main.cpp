@@ -60,8 +60,8 @@ void Board::loopGame() {
     cin >> contin;
     if (contin == 'y') {
         for (auto &i : board) {
-            for (int j = 0; j < HEIGHT; j++) {
-                i[j] = ' ';
+            for (auto &j : i) {
+                j = ' ';
             }
         }
         loopGame();
@@ -79,8 +79,8 @@ Returns: N/A
 */
 Board::Board() {
     for (auto &i : board) {
-        for (int j = 0; j < HEIGHT; j++) {
-            i[j] = ' ';
+        for (auto &j : i) {
+            j = ' ';
         }
     }
 }
@@ -95,8 +95,8 @@ void Board::printBoard() {
     cout << "\n\n";
     for (auto &i : board) {
         cout << "|";
-        for (int j = 0; j < HEIGHT; j++) {
-            cout << i[j];
+        for (auto &j : i) {
+            cout << j;
             cout << "|";
         }
         cout << endl;
@@ -165,8 +165,8 @@ Returns: true if its full, false if not full
 bool Board::isFull() {
     int blankSpaces = 0;
     for (auto &i : board) {
-        for (int j = 0; j < HEIGHT; j++) {
-            if (i[j] == ' ') {
+        for (auto &j : i) {
+            if (j == ' ') {
                 return true;
             }
         }
@@ -184,11 +184,9 @@ bool Board::hasWon(char player) {
     //horizontal win condition
     for (int i = 0; i < WIDTH; i++) {
         for (int j = 0; j < HEIGHT - 3; j++) {
-            {
-                if (board[i][j] == player && board[i][j] == board[i][j + 1] && board[i][j] == board[i][j + 2] &&
-                    board[i][j] == board[i][j + 3])
-                    return true;
-            }
+            if (board[i][j] == player && board[i][j] == board[i][j + 1] && board[i][j] == board[i][j + 2] &&
+                board[i][j] == board[i][j + 3])
+                return true;
         }
     }
 
@@ -205,22 +203,18 @@ bool Board::hasWon(char player) {
     //diagonal right (\) win condition
     for (int i = 0; i < HEIGHT - 3; i++) {
         for (int j = 3; j > -1; j--) {
-            {
-                if (board[i][j] == player && board[i][j] == board[i + 1][j + 1] && board[i][j] == board[i + 2][j + 2] &&
-                    board[i][j] == board[i + 3][j + 3])
-                    return true;
-            }
+            if (board[i][j] == player && board[i][j] == board[i + 1][j + 1] && board[i][j] == board[i + 2][j + 2] &&
+                board[i][j] == board[i + 3][j + 3])
+                return true;
         }
     }
 
     //diagonal left (/) win condition
     for (int i = 0; i < HEIGHT - 3; i++) {
         for (int j = 3; j < HEIGHT; j++) {
-            {
-                if (board[i][j] == player && board[i][j] == board[i + 1][j - 1] && board[i][j] == board[i + 2][j - 2] &&
-                    board[i][j] == board[i + 3][j - 3])
-                    return true;
-            }
+            if (board[i][j] == player && board[i][j] == board[i + 1][j - 1] && board[i][j] == board[i + 2][j - 2] &&
+                board[i][j] == board[i + 3][j - 3])
+                return true;
         }
     }
     //if no conditions met, player has not won, thus false
