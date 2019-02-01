@@ -26,11 +26,11 @@ private:
 
     void printBoard();
 
-    bool checkMove(int col);
+    bool isMoveLegal(int col);
 
     void makeMove(char player);
 
-    bool colNotFull(int col);
+    bool colFull(int col);
 
     bool isFull();
 
@@ -59,9 +59,9 @@ void Board::loopGame() {
     cout << "Play again? (y/n): ";
     cin >> contin;
     if (contin == 'y') {
-        for (int i = 0; i < WIDTH; i++) {
+        for (auto &i : board) {
             for (int j = 0; j < HEIGHT; j++) {
-                board[i][j] = ' ';
+                i[j] = ' ';
             }
         }
         loopGame();
@@ -78,9 +78,9 @@ Input: N/A
 Returns: N/A
 */
 Board::Board() {
-    for (int i = 0; i < WIDTH; i++) {
+    for (auto &i : board) {
         for (int j = 0; j < HEIGHT; j++) {
-            board[i][j] = ' ';
+            i[j] = ' ';
         }
     }
 }
@@ -93,10 +93,10 @@ Returns: N/A
 */
 void Board::printBoard() {
     cout << "\n\n";
-    for (int i = 0; i < WIDTH; i++) {
+    for (auto &i : board) {
         cout << "|";
         for (int j = 0; j < HEIGHT; j++) {
-            cout << board[i][j];
+            cout << i[j];
             cout << "|";
         }
         cout << endl;
@@ -106,20 +106,13 @@ void Board::printBoard() {
 }
 
 /*
-Function: checkMove (I split this into this and colNotFull)
+Function: isMoveLegal (I split this into this and colNotFull)
 Purpose: checks that the move is in the right area (0<=x<=6))
 Input: col (the player's choice of where to move)
 Returns: true if move is valid, false if invalid
 */
-bool Board::checkMove(const int col) {
-    if (col > 6) {
-        return false;
-    }
-    if (col < 0) {
-        return false;
-    }
-
-    return true;
+bool Board::isMoveLegal(const int col) {
+    return (col <= WIDTH && col >= 0);
 }
 
 /*
@@ -132,37 +125,17 @@ void Board::makeMove(char player) {
     int col;
     printBoard();
     cout << "Player ";
-    if (player == 'X') {
-    } else if (player == 'O') {
-    }
     cout << player;
     cout << " select a column to play in: ";
     cin >> col;
-    while (cin.fail()) {
-        cout << "Select a valid column: ";
-        cin.clear();
-        cin.ignore(100, '\n');
-        cin >> col;
-    }
-    //while (isalpha(col)) {
-    //	cout << "Column must be numberic, select a valid column: ";
-    //	cin >> col;
-    //}
 
-    while (!(checkMove((col)) && (colNotFull(col)))) {
-        if (!colNotFull(col) && checkMove(col)) {
-            cout << "Column full, s";
-        } else {
-            cout << "S";
-        }
-        cout << "elect a valid column: ";
-        cin >> col;
-        while (cin.fail()) {
+    while (!isMoveLegal(col) || colFull(col)) {
+        do {
             cout << "Select a valid column: ";
             cin.clear();
             cin.ignore(100, '\n');
             cin >> col;
-        }
+        } while (cin.fail());
     }
 
     for (int i = WIDTH; i >= 0; i--) {
@@ -179,13 +152,8 @@ Purpose: checks to see if all possible moves in the col are full
 Input: col (the player's choice of where to move)
 Returns: true if not full, false if cant play
 */
-bool Board::colNotFull(const int col) {
-    for (int i = 0; i < WIDTH; i++) {
-        if (board[i][col] == ' ') {
-            return true;
-        }
-    }
-    return false;
+bool Board::colFull(const int col) {
+    return board[0][col] != ' ';
 }
 
 /*
@@ -196,17 +164,14 @@ Returns: true if its full, false if not full
 */
 bool Board::isFull() {
     int blankSpaces = 0;
-    for (int i = 0; i < WIDTH; i++) {
+    for (auto &i : board) {
         for (int j = 0; j < HEIGHT; j++) {
-            if (board[i][j] == ' ') {
-                blankSpaces++;
+            if (i[j] == ' ') {
+                return true;
             }
         }
     }
-    if (blankSpaces == 0) {
-        return false;
-    }
-    return true;
+    return false;
 }
 
 /*
@@ -270,13 +235,10 @@ Returns: N/A
 */
 void Board::announceWinner(char winner) {
     printBoard();
-    if (winner == 'X') {
+    if (winner != 'C') {
         cout << winner;
         cout << " wins!";
-    } else if (winner == 'O') {
-        cout << winner;
-        cout << " wins!";
-    } else if (winner == 'C') {
+    } else {
         cout << "It's a tie! No one wins.";
     }
     cout << endl;
